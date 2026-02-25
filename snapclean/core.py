@@ -4,6 +4,7 @@ import tempfile
 import zipfile
 from datetime import datetime
 import subprocess
+import pathspec
 
 EXCLUDE_DIRS = {
     ".git",
@@ -43,6 +44,12 @@ def format_size(size_bytes):
 def create_snapshot(project_path, output_dir, build=False, dry_run=False):
     project_path = os.path.abspath(project_path)
     original_size = get_directory_size(project_path)
+    gitignore_path = os.path.join(project_path, ".gitignore")
+    spec = None
+
+    if os.path.exists(gitignore_path):
+        with open(gitignore_path) as f:
+            spec = pathspec.PathSpec.from_lines("gitwildmatch", f)
     if build:
         print("Running build command...")
         subprocess.run(["npm", "run", "build"], cwd=project_path)
@@ -51,12 +58,24 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
         temp_project = os.path.join(temp_dir, "project_copy")
         removed_items = []
 
-        def ignore_filter(dir, files):
+        def ignore_filter(directory, contents):
             ignored = []
-            for f in files:
-                if f in EXCLUDE_DIRS or f in EXCLUDE_FILES:
-                    ignored.append(f)
-                    removed_items.append(os.path.join(dir, f))
+            for item in contents:
+                full_path = os.path.join(directory, item)
+                rel_path = os.path.relpath(full_path, project_path)
+
+                should_ignore = False
+
+                if item in EXCLUDE_DIRS or item in EXCLUDE_FILES:
+                    should_ignore = True
+
+                if spec and spec.match_file(rel_path):
+                    should_ignore = True
+
+                if should_ignore:
+                    ignored.append(item)
+                    removed_items.append(full_path)
+
             return ignored
         shutil.copytree(
             project_path,
