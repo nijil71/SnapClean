@@ -24,10 +24,25 @@ EXCLUDE_FILES = {
 def should_exclude(name):
     return name in EXCLUDE_DIRS or name in EXCLUDE_FILES
 
+def get_directory_size(path):
+    total = 0
+    for root, _, files in os.walk(path):
+        for file in files:
+            full_path = os.path.join(root, file)
+            if os.path.isfile(full_path):
+                total += os.path.getsize(full_path)
+    return total
+
+def format_size(size_bytes):
+    for unit in ["B", "KB", "MB", "GB"]:
+        if size_bytes < 1024:
+            return f"{round(size_bytes, 2)} {unit}"
+        size_bytes /= 1024
+    return f"{round(size_bytes, 2)} TB"
 
 def create_snapshot(project_path, output_dir, build=False, dry_run=False):
     project_path = os.path.abspath(project_path)
-
+    original_size = get_directory_size(project_path)
     if build:
         print("Running build command...")
         subprocess.run(["npm", "run", "build"], cwd=project_path)
@@ -75,3 +90,13 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
         for item in removed_items:
             print(f"- {item}")
         print(f"Snapshot created: {zip_path}")
+        snapshot_size = os.path.getsize(zip_path)
+
+        reduction = 0
+        if original_size > 0:
+            reduction = 100 - ((snapshot_size / original_size) * 100)
+
+        print("\nSize Summary:")
+        print(f"Original size: {format_size(original_size)}")
+        print(f"Snapshot size: {format_size(snapshot_size)}")
+        print(f"Reduced by: {round(reduction, 2)}%")
