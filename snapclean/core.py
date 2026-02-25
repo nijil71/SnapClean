@@ -13,7 +13,7 @@ EXCLUDE_DIRS = {
     ".venv",
     "env",
     ".idea",
-    ".vscode"
+    ".vscode",
     "dist"
 }
 
@@ -25,7 +25,7 @@ def should_exclude(name):
     return name in EXCLUDE_DIRS or name in EXCLUDE_FILES
 
 
-def create_snapshot(project_path, output_dir, build=False):
+def create_snapshot(project_path, output_dir, build=False, dry_run=False):
     project_path = os.path.abspath(project_path)
 
     if build:
@@ -49,12 +49,22 @@ def create_snapshot(project_path, output_dir, build=False):
             ignore=ignore_filter
         )
 
-        os.makedirs(output_dir, exist_ok=True)
 
+        os.makedirs(output_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         zip_name = f"snapshot_{timestamp}.zip"
         zip_path = os.path.join(output_dir, zip_name)
 
+        if dry_run:
+            print("\nDry run mode enabled.")
+            if removed_items:
+                print("The following items would be removed:")
+                for item in removed_items:
+                    print(f"- {item}")
+            else:
+                print("No items would be removed.")
+            return
+        
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
             for root, _, files in os.walk(temp_project):
                 for file in files:

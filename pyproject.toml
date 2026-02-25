@@ -4,4 +4,4 @@ version = "0.1.0"
 dependencies = ["typer"]
 
 [project.scripts]
-snap = "snapclean.cli:main"
+snap = "snapclean.cli:app"
