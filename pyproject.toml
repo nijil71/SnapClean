@@ -1,7 +1,27 @@
 [project]
 name = "snapclean"
-version = "0.1.0"
-dependencies = ["typer", "pathspec", "rich"]
+version = "0.2.0"
+description = "Create clean, client-safe, reproducible project snapshots from your codebase."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Nijil N M" }
+]
+dependencies = [
+    "typer",
+    "pathspec",
+    "rich"
+]
+
+[project.urls]
+Homepage = "https://github.com/nijil71/SnapClean"
+Repository = "https://github.com/nijil71/SnapClean"
+Issues = "https://github.com/nijil71/SnapClean/issues"
 
 [project.scripts]
 snap = "snapclean.cli:app"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
