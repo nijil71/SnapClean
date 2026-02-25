@@ -1,0 +1,6 @@
+dist/
+env/
+__pycache__/
+*.pyc
+*.pyo
+snapclean.egg-info/
