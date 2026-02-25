@@ -47,6 +47,16 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
     gitignore_path = os.path.join(project_path, ".gitignore")
     spec = None
 
+    config_path = os.path.join(project_path, ".snapclean.toml")
+
+    if os.path.exists(config_path):
+        import tomllib
+
+        with open(config_path, "rb") as f:
+            config = tomllib.load(f)
+
+        build = config.get("build", build)
+        output_dir = config.get("output", output_dir)
     if os.path.exists(gitignore_path):
         with open(gitignore_path) as f:
             spec = pathspec.PathSpec.from_lines("gitwildmatch", f)
