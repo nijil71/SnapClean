@@ -6,10 +6,15 @@
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 <!-- [![CI](https://github.com/yourusername/snapclean/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/snapclean/actions) -->
+## Preview
+
+![Snapclean Demo](docs/preview.gif)
 
 Snapclean strips development clutter from your project, respects `.gitignore`, generates a safe `.env.example`, and produces a clean zip archive ready for sharing with clients or collaborators — all in a single command.
 
 ---
+
+
 
 ## Table of Contents
 
