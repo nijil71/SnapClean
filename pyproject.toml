@@ -1,7 +1,7 @@
 [project]
 name = "snapclean"
 version = "0.1.0"
-dependencies = ["typer", "pathspec"]
+dependencies = ["typer", "pathspec", "rich"]
 
 [project.scripts]
 snap = "snapclean.cli:app"

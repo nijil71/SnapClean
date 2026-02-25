@@ -5,6 +5,11 @@ import zipfile
 from datetime import datetime
 import subprocess
 import pathspec
+from rich.console import Console
+from rich.table import Table
+from rich import box
+
+console = Console()
 
 EXCLUDE_DIRS = {
     ".git",
@@ -116,7 +121,7 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
             temp_project,
             ignore=ignore_filter
         )
-        
+
         generate_env_example(project_path, temp_project)
 
         os.makedirs(output_dir, exist_ok=True)
@@ -125,13 +130,13 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
         zip_path = os.path.join(output_dir, zip_name)
 
         if dry_run:
-            print("\nDry run mode enabled.")
+            console.print("[bold magenta]Dry run mode enabled.[/bold magenta]")
             if removed_items:
-                print("The following items would be removed:")
+                console.print("\n[bold yellow]Items that would be removed:[/bold yellow]")
                 for item in removed_items:
-                    print(f"- {item}")
+                    console.print(f"[red]- {item}[/red]")
             else:
-                print("No items would be removed.")
+                console.print("\n[bold green]No items would be removed.[/bold green]")
             return
         
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
@@ -150,7 +155,13 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
         if original_size > 0:
             reduction = 100 - ((snapshot_size / original_size) * 100)
 
-        print("\nSize Summary:")
-        print(f"Original size: {format_size(original_size)}")
-        print(f"Snapshot size: {format_size(snapshot_size)}")
-        print(f"Reduced by: {round(reduction, 2)}%")
+        table = Table(title="Snapshot Summary", box=box.ROUNDED)
+
+        table.add_column("Metric", style="cyan")
+        table.add_column("Value", style="green")
+
+        table.add_row("Original size", format_size(original_size))
+        table.add_row("Snapshot size", format_size(snapshot_size))
+        table.add_row("Reduced by", f"{round(reduction, 2)}%")
+
+        console.print(table)
