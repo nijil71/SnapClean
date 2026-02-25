@@ -1,10 +1,15 @@
 import typer
 from snapclean.core import create_snapshot
+from rich.console import Console
 
+console = Console()
 app = typer.Typer()
 
+__version__ = "0.2.0"
+
+
 @app.command()
-def main(
+def run(
     path: str = typer.Option(".", help="Project path"),
     output: str = typer.Option("dist", help="Output directory"),
     build: bool = typer.Option(False, help="Run build before snapshot"),
@@ -15,3 +20,9 @@ def main(
     """
     create_snapshot(path, output, build, dry_run)
 
+@app.command()
+def version():
+    """
+    Show snapclean version.
+    """
+    console.print(f"[bold green]snapclean version {__version__}[/bold green]")
