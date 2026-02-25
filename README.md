@@ -62,7 +62,7 @@ pip install -e .
 ```bash
 # Navigate to your project and create a snapshot
 cd my-project
-snap run
+snap
 ```
 
 That's it. A timestamped zip archive is saved to `dist/` by default.
@@ -73,19 +73,19 @@ That's it. A timestamped zip archive is saved to `dist/` by default.
 
 ```bash
 # Basic snapshot
-snap run
+snap
 
 # Preview what would be removed (no files created)
-snap run --dry-run
+snap --dry-run
 
 # Run a build step before snapshotting
-snap run --build
+snap --build
 
 # Save the snapshot to a custom directory
-snap run --output ./release
+snap --output ./release
 
 # Snapshot a different project directory
-snap run --path ./path/to/project
+snap --path ./path/to/project
 
 # Check the installed version
 snap version

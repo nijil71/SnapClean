@@ -1,15 +1,15 @@
 import typer
-from snapclean.core import create_snapshot
 from rich.console import Console
+from snapclean.core import create_snapshot
+from snapclean import __version__
 
 console = Console()
 app = typer.Typer()
 
-__version__ = "0.2.0"
 
-
-@app.command()
-def run(
+@app.callback(invoke_without_command=True)
+def main(
+    ctx: typer.Context,
     path: str = typer.Option(".", help="Project path"),
     output: str = typer.Option("dist", help="Output directory"),
     build: bool = typer.Option(False, help="Run build before snapshot"),
@@ -18,7 +18,9 @@ def run(
     """
     Create a clean project snapshot.
     """
-    create_snapshot(path, output, build, dry_run)
+    if ctx.invoked_subcommand is None:
+        create_snapshot(path, output, build, dry_run)
+
 
 @app.command()
 def version():
