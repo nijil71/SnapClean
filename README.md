@@ -78,8 +78,8 @@ snap
 # Preview what would be removed (no files created)
 snap --dry-run
 
-# Run a build step before snapshotting
-snap --build
+# # Run a build step before snapshotting
+# snap --build
 
 # Save the snapshot to a custom directory
 snap --output ./release
@@ -99,7 +99,7 @@ snap version
 |--------|---------|-------------|
 | `--path TEXT` | `.` (current directory) | Path to the project to snapshot |
 | `--output TEXT` | `dist` | Directory where the zip archive will be saved |
-| `--build / --no-build` | `false` | Run a build command before snapshotting |
+<!-- | `--build / --no-build` | `false` | Run a build command before snapshotting | -->
 | `--dry-run / --no-dry-run` | `false` | Preview removals without creating any files |
 | `--help` | — | Show help and exit |
 
@@ -110,7 +110,6 @@ snap version
 To avoid typing options every time, create a `.snapclean.toml` file in your project root:
 
 ```toml
-build = false
 output = "release"
 ```
 
@@ -120,7 +119,7 @@ With this in place, running `snap` (no arguments) will use your saved preference
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `build` | boolean | Whether to run a build command before snapshotting |
+<!-- | `build` | boolean | Whether to run a build command before snapshotting | -->
 | `output` | string | Output directory for the zip archive |
 
 ---
