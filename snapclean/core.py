@@ -41,6 +41,30 @@ def format_size(size_bytes):
         size_bytes /= 1024
     return f"{round(size_bytes, 2)} TB"
 
+def generate_env_example(project_path, temp_project):
+    env_path = os.path.join(project_path, ".env")
+
+    if not os.path.exists(env_path):
+        return
+
+    example_path = os.path.join(temp_project, ".env.example")
+
+    with open(env_path, "r") as f:
+        lines = f.readlines()
+
+    cleaned = []
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+
+        if "=" in line:
+            key = line.split("=")[0]
+            cleaned.append(f"{key}=\n")
+
+    with open(example_path, "w") as f:
+        f.writelines(cleaned)
+
 def create_snapshot(project_path, output_dir, build=False, dry_run=False):
     project_path = os.path.abspath(project_path)
     original_size = get_directory_size(project_path)
@@ -92,7 +116,8 @@ def create_snapshot(project_path, output_dir, build=False, dry_run=False):
             temp_project,
             ignore=ignore_filter
         )
-
+        
+        generate_env_example(project_path, temp_project)
 
         os.makedirs(output_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
